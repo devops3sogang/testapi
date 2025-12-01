@@ -1,0 +1,1782 @@
+{
+	"info": {
+		"_postman_id": "b1ca18a2-cb30-46dd-84f5-3a6bd01573c9",
+		"name": "Backend REST API 43.202",
+		"description": "Spring Boot + MongoDB 기반 REST API 문서입니다.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50126618",
+		"_collection_link": "https://jjw712-5361309.postman.co/workspace/%25EC%259E%25A5%25EC%25A7%2580%25EC%259B%2590's-Workspace~c5c699fd-20cc-414f-85cb-72f0c6a5791a/collection/50126618-b1ca18a2-cb30-46dd-84f5-3a6bd01573c9?action=share&source=collection_link&creator=50126618"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "register",
+							"item": [
+								{
+									"name": "register",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													"const email = `testuser_${Date.now()}@sogang.ac.kr`;\r",
+													"const pw = \"pw_init_123!\";  // 테스트용 고정 비번 하나\r",
+													"\r",
+													"pm.environment.set(\"test_email\", email);\r",
+													"pm.environment.set(\"password\", pw);\r",
+													"\r",
+													"console.log(\"생성한 테스트 계정:\", email, pw);\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"{{test_email}}\",\n  \"nickname\": \"서강알로스\",\n  \"password\": \"{{password}}\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/register",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"register"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"testuser1@sogang.ac.kr\",\n  \"nickname\": \"서강알로스\",\n  \"password\": \"mytestpassword1\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/auth/register",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"auth",
+														"register"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"body": "string"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "login",
+							"item": [
+								{
+									"name": "login",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"// 로그인 응답 처리 스크립트 (Tests 탭)\r",
+													"\r",
+													"if (pm.response.code === 200) {\r",
+													"    const token = pm.response.text().trim();\r",
+													"\r",
+													"    // JWT 대충 형식 체크 (eyJ로 시작하는 경우가 많음)\r",
+													"    if (token && token.startsWith(\"eyJ\")) {\r",
+													"        pm.environment.set(\"token\", token);\r",
+													"        console.log(\"✅ Token 업데이트됨:\", token);\r",
+													"    } else {\r",
+													"        console.log(\"⚠ 200인데 응답이 토큰같지는 않음, token 안 건드림\");\r",
+													"    }\r",
+													"} else {\r",
+													"    // 200이 아니면(로그인 실패 등) 토큰 날려버림\r",
+													"    console.log(`❌ 로그인 실패(code=${pm.response.code}), token 환경변수 삭제`);\r",
+													"    pm.environment.unset(\"token\");\r",
+													"}\r",
+													"\r",
+													"// 참고: 여기서 테스트도 하나 박아두면 좋음\r",
+													"pm.test(\"로그인 요청이 200이어야 함\", function () {\r",
+													"    pm.expect(pm.response.code).to.eql(200);\r",
+													"});\r",
+													"\r",
+													""
+												],
+												"type": "text/javascript",
+												"packages": {},
+												"requests": {}
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{password}}\"\n}\n\n",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/auth/login",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "*/*"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"email\": \"testuser1@sogang.ac.kr\",\n  \"password\": \"mytestpassword1\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/auth/login",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"auth",
+														"login"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"body": "string"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "me",
+					"item": [
+						{
+							"name": "get My Profile",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/users/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/users/me",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"email\": \"string\",\n  \"nickname\": \"string\",\n  \"role\": \"string\",\n  \"createdAt\": \"string\",\n  \"likedReviews\": [\n    {\n      \"id\": \"string\",\n      \"userId\": \"string\",\n      \"nickname\": \"string\",\n      \"target\": {\n        \"type\": \"string\",\n        \"restaurantId\": \"string\",\n        \"restaurantName\": \"string\",\n        \"menuItems\": \"string\"\n      },\n      \"ratings\": {\n        \"menuRatings\": [\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          },\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          }\n        ],\n        \"restaurantRating\": 4\n      },\n      \"content\": \"string\",\n      \"imageUrls\": [\n        \"string\",\n        \"string\"\n      ],\n      \"likeCount\": 1410,\n      \"createdAt\": \"1989-02-21T22:12:02.693Z\",\n      \"updatedAt\": \"2016-02-18T04:01:25.202Z\"\n    },\n    {\n      \"id\": \"string\",\n      \"userId\": \"string\",\n      \"nickname\": \"string\",\n      \"target\": {\n        \"type\": \"string\",\n        \"restaurantId\": \"string\",\n        \"restaurantName\": \"string\",\n        \"menuItems\": \"string\"\n      },\n      \"ratings\": {\n        \"menuRatings\": [\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          },\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          }\n        ],\n        \"restaurantRating\": 4\n      },\n      \"content\": \"string\",\n      \"imageUrls\": [\n        \"string\",\n        \"string\"\n      ],\n      \"likeCount\": 9684,\n      \"createdAt\": \"1967-02-09T16:20:30.380Z\",\n      \"updatedAt\": \"1967-05-29T03:29:13.860Z\"\n    }\n  ],\n  \"_id\": \"string\",\n  \"myReviews\": [\n    {\n      \"id\": \"string\",\n      \"userId\": \"string\",\n      \"nickname\": \"string\",\n      \"target\": {\n        \"type\": \"string\",\n        \"restaurantId\": \"string\",\n        \"restaurantName\": \"string\",\n        \"menuItems\": \"string\"\n      },\n      \"ratings\": {\n        \"menuRatings\": [\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          },\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          }\n        ],\n        \"restaurantRating\": 4\n      },\n      \"content\": \"string\",\n      \"imageUrls\": [\n        \"string\",\n        \"string\"\n      ],\n      \"likeCount\": 9537,\n      \"createdAt\": \"1998-01-29T18:44:35.237Z\",\n      \"updatedAt\": \"1957-02-09T10:06:36.922Z\"\n    },\n    {\n      \"id\": \"string\",\n      \"userId\": \"string\",\n      \"nickname\": \"string\",\n      \"target\": {\n        \"type\": \"string\",\n        \"restaurantId\": \"string\",\n        \"restaurantName\": \"string\",\n        \"menuItems\": \"string\"\n      },\n      \"ratings\": {\n        \"menuRatings\": [\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          },\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          }\n        ],\n        \"restaurantRating\": 4\n      },\n      \"content\": \"string\",\n      \"imageUrls\": [\n        \"string\",\n        \"string\"\n      ],\n      \"likeCount\": 5287,\n      \"createdAt\": \"1949-08-03T15:48:06.506Z\",\n      \"updatedAt\": \"1999-01-19T14:28:20.946Z\"\n    }\n  ]\n}"
+								}
+							]
+						},
+						{
+							"name": "update My Profile",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 200) {\r",
+											"    // 이제 현재 비밀번호는 pw_new 가 된다\r",
+											"    const newPw = pm.environment.get(\"pw_new\");\r",
+											"    pm.environment.set(\"pw_current\", newPw);\r",
+											"    console.log(\"✅ 비번 변경 성공, pw_current -> pw_new\");\r",
+											"} else {\r",
+											"    console.log(\"❌ 비번 변경 실패, pw_current 그대로 유지\");\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"oldPassword\": \"{{pw_current}}\",\n  \"newPassword\": \"{{pw_new}}\"\n}\n",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nickname\": \"노고산동불주먹\",\n  \"password\": \"newpassword123\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/me",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "update My Profile return",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 200) {\r",
+											"    pm.environment.set(\"password\", \"pw_init_123!\");\r",
+											"    console.log(\"✅ 비번 복구: password -> pw_init_123!\");\r",
+											"} else {\r",
+											"    console.log(\"❌ 비번 복구 실패, password 그대로 유지\");\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"oldPassword\": \"{{password}}\",       // 지금은 pw_new_123! 상태\n  \"newPassword\": \"pw_init_123!\"\n}\n",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/users/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"nickname\": \"노고산동불주먹\",\n  \"password\": \"newpassword123\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/users/me",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"users",
+												"me"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "{reviewId}",
+					"item": [
+						{
+							"name": "like",
+							"item": [
+								{
+									"name": "toggle Like",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{bearerToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/reviews/:reviewId/like",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reviews",
+												":reviewId",
+												"like"
+											],
+											"variable": [
+												{
+													"key": "reviewId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "*/*"
+													},
+													{
+														"key": "Authorization",
+														"value": "Bearer <token>",
+														"description": "Added as a part of security scheme: bearer"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/reviews/:reviewId/like",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"reviews",
+														":reviewId",
+														"like"
+													],
+													"variable": [
+														{
+															"key": "reviewId",
+															"value": "string"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"createdLike\": {\n    \"get_id\": \"string\",\n    \"userId\": \"string\",\n    \"reviewId\": \"string\",\n    \"createdAt\": \"string\"\n  },\n  \"deletedLike\": {\n    \"get_id\": \"string\",\n    \"userId\": \"string\",\n    \"reviewId\": \"string\",\n    \"createdAt\": \"string\"\n  },\n  \"likeCount\": 3104\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "update Review",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"ratings\": {\n    \"menuRatings\": [\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      },\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      }\n    ],\n    \"restaurantRating\": 4\n  },\n  \"content\": \"string\",\n  \"imageUrls\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/reviews/:reviewId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reviews",
+										":reviewId"
+									],
+									"variable": [
+										{
+											"key": "reviewId",
+											"value": "string"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"ratings\": {\n    \"menuRatings\": [\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      },\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      }\n    ],\n    \"restaurantRating\": 4\n  },\n  \"content\": \"string\",\n  \"imageUrls\": [\n    \"string\",\n    \"string\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/reviews/:reviewId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reviews",
+												":reviewId"
+											],
+											"variable": [
+												{
+													"key": "reviewId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"string\",\n  \"userId\": \"string\",\n  \"nickname\": \"string\",\n  \"target\": {\n    \"type\": \"string\",\n    \"restaurantId\": \"string\",\n    \"restaurantName\": \"string\",\n    \"menuItems\": \"string\"\n  },\n  \"ratings\": {\n    \"menuRatings\": [\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      },\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      }\n    ],\n    \"restaurantRating\": 4\n  },\n  \"content\": \"string\",\n  \"imageUrls\": [\n    \"string\",\n    \"string\"\n  ],\n  \"likeCount\": 1007,\n  \"createdAt\": \"2015-12-15T07:08:23.523Z\",\n  \"updatedAt\": \"2010-10-26T23:29:38.306Z\"\n}"
+								}
+							]
+						},
+						{
+							"name": "delete Review",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/reviews/:reviewId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reviews",
+										":reviewId"
+									],
+									"variable": [
+										{
+											"key": "reviewId",
+											"value": "string"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/reviews/:reviewId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"reviews",
+												":reviewId"
+											],
+											"variable": [
+												{
+													"key": "reviewId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "get Reviews",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/reviews?restaurantId=string&limit=5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reviews"
+							],
+							"query": [
+								{
+									"key": "restaurantId",
+									"value": "string"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/reviews?restaurantId=string&limit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"reviews"
+									],
+									"query": [
+										{
+											"key": "restaurantId",
+											"value": "string"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"userId\": \"507f191e810c19729de860e1\",\n    \"nickname\": \"김철수\",\n    \"restaurantId\": \"507f1f77bcf86cd799439011\",\n    \"restaurantName\": \"맛있는 김밥\",\n    \"ratings\": {\n      \"menuRatings\": [\n        {\n          \"menuName\": \"참치김밥\",\n          \"rating\": 5\n        },\n        {\n          \"menuName\": \"참치김밥\",\n          \"rating\": 5\n        }\n      ],\n      \"restaurantRating\": 4\n    },\n    \"content\": \"김밥이 정말 맛있어요! 참치가 많이 들어있습니다.\",\n    \"imageUrls\": [\n      \"string\",\n      \"string\"\n    ],\n    \"likeCount\": 15,\n    \"_id\": \"507f191e810c19729de860ea\"\n  },\n  {\n    \"userId\": \"507f191e810c19729de860e1\",\n    \"nickname\": \"김철수\",\n    \"restaurantId\": \"507f1f77bcf86cd799439011\",\n    \"restaurantName\": \"맛있는 김밥\",\n    \"ratings\": {\n      \"menuRatings\": [\n        {\n          \"menuName\": \"참치김밥\",\n          \"rating\": 5\n        },\n        {\n          \"menuName\": \"참치김밥\",\n          \"rating\": 5\n        }\n      ],\n      \"restaurantRating\": 4\n    },\n    \"content\": \"김밥이 정말 맛있어요! 참치가 많이 들어있습니다.\",\n    \"imageUrls\": [\n      \"string\",\n      \"string\"\n    ],\n    \"likeCount\": 15,\n    \"_id\": \"507f191e810c19729de860ea\"\n  }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "restaurants",
+			"item": [
+				{
+					"name": "{restaurantId}",
+					"item": [
+						{
+							"name": "reviews",
+							"item": [
+								{
+									"name": "create Review",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{bearerToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"ratings\": {\n    \"menuRatings\": [\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      },\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      }\n    ],\n    \"restaurantRating\": 4\n  },\n  \"content\": \"여기 정말 맛있어요! 추천합니다.\",\n  \"imageUrls\": [\n    \"https://example.com/image1.jpg\",\n    \"https://example.com/image2.jpg\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/restaurants/:restaurantId/reviews",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"restaurants",
+												":restaurantId",
+												"reviews"
+											],
+											"variable": [
+												{
+													"key": "restaurantId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "*/*"
+													},
+													{
+														"key": "Authorization",
+														"value": "Bearer <token>",
+														"description": "Added as a part of security scheme: bearer"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"ratings\": {\n    \"menuRatings\": [\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      },\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      }\n    ],\n    \"restaurantRating\": 4\n  },\n  \"content\": \"여기 정말 맛있어요! 추천합니다.\",\n  \"imageUrls\": [\n    \"https://example.com/image1.jpg\",\n    \"https://example.com/image2.jpg\"\n  ]\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/restaurants/:restaurantId/reviews",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"restaurants",
+														":restaurantId",
+														"reviews"
+													],
+													"variable": [
+														{
+															"key": "restaurantId",
+															"value": "string"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "*/*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"id\": \"string\",\n  \"userId\": \"string\",\n  \"nickname\": \"string\",\n  \"target\": {\n    \"type\": \"string\",\n    \"restaurantId\": \"string\",\n    \"restaurantName\": \"string\",\n    \"menuItems\": \"string\"\n  },\n  \"ratings\": {\n    \"menuRatings\": [\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      },\n      {\n        \"menuName\": \"참치김밥\",\n        \"rating\": 5\n      }\n    ],\n    \"restaurantRating\": 4\n  },\n  \"content\": \"string\",\n  \"imageUrls\": [\n    \"string\",\n    \"string\"\n  ],\n  \"likeCount\": 1007,\n  \"createdAt\": \"2015-12-15T07:08:23.523Z\",\n  \"updatedAt\": \"2010-10-26T23:29:38.306Z\"\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "get Restaurant By Id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/restaurants/:restaurantId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"restaurants",
+										":restaurantId"
+									],
+									"variable": [
+										{
+											"key": "restaurantId",
+											"value": "string"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/restaurants/:restaurantId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"restaurants",
+												":restaurantId"
+											],
+											"variable": [
+												{
+													"key": "restaurantId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"name\": \"맛있는 김밥\",\n  \"type\": \"OFF_CAMPUS\",\n  \"category\": \"분식\",\n  \"address\": \"서울특별시 마포구 백범로 1\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"imageUrl\": \"https://example.com/kimbap.jpg\",\n  \"stats\": {\n    \"rating\": 1058.7576136757248,\n    \"reviewCount\": 8345,\n    \"likeCount\": 4734\n  },\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ],\n  \"reviews\": [\n    {\n      \"userId\": \"507f191e810c19729de860e1\",\n      \"nickname\": \"김철수\",\n      \"ratings\": {\n        \"menuRatings\": [\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          },\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          }\n        ],\n        \"restaurantRating\": 4\n      },\n      \"content\": \"김밥이 정말 맛있어요! 참치가 많이 들어있습니다.\",\n      \"imageUrls\": [\n        \"string\",\n        \"string\"\n      ],\n      \"likeCount\": 15,\n      \"createdAt\": \"2025-01-05T10:30:00Z\",\n      \"likedByCurrentUser\": false,\n      \"_id\": \"507f191e810c19729de860ea\"\n    },\n    {\n      \"userId\": \"507f191e810c19729de860e1\",\n      \"nickname\": \"김철수\",\n      \"ratings\": {\n        \"menuRatings\": [\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          },\n          {\n            \"menuName\": \"참치김밥\",\n            \"rating\": 5\n          }\n        ],\n        \"restaurantRating\": 4\n      },\n      \"content\": \"김밥이 정말 맛있어요! 참치가 많이 들어있습니다.\",\n      \"imageUrls\": [\n        \"string\",\n        \"string\"\n      ],\n      \"likeCount\": 15,\n      \"createdAt\": \"2025-01-05T10:30:00Z\",\n      \"likedByCurrentUser\": false,\n      \"_id\": \"507f191e810c19729de860ea\"\n    }\n  ],\n  \"createdAt\": \"2025-01-01T00:00:00Z\",\n  \"updatedAt\": \"2025-01-01T00:00:00Z\",\n  \"active\": true,\n  \"_id\": \"507f1f77bcf86cd799439011\"\n}"
+								}
+							]
+						},
+						{
+							"name": "update Restaurant",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"address\": \"서울특별시 마포구 백범로 17\",\n  \"category\": \"한식\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"name\": \"거구장\",\n  \"type\": \"OFF_CAMPUS\",\n  \"imageUrl\": \"https://example.com/image.jpg\",\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/restaurants/:restaurantId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"restaurants",
+										":restaurantId"
+									],
+									"variable": [
+										{
+											"key": "restaurantId",
+											"value": "string"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"address\": \"서울특별시 마포구 백범로 17\",\n  \"category\": \"한식\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"name\": \"거구장\",\n  \"type\": \"OFF_CAMPUS\",\n  \"imageUrl\": \"https://example.com/image.jpg\",\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/restaurants/:restaurantId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"restaurants",
+												":restaurantId"
+											],
+											"variable": [
+												{
+													"key": "restaurantId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"type\": \"string\",\n  \"category\": \"string\",\n  \"address\": \"string\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"imageUrl\": \"string\",\n  \"stats\": {\n    \"rating\": 9398.775544431222,\n    \"reviewCount\": 3043,\n    \"likeCount\": 116\n  },\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ],\n  \"createdAt\": \"1956-12-17T19:35:23.582Z\",\n  \"updatedAt\": \"1970-07-22T21:59:37.188Z\",\n  \"active\": true,\n  \"isActive\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "delete Restaurant",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{bearerToken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/restaurants/:restaurantId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"restaurants",
+										":restaurantId"
+									],
+									"variable": [
+										{
+											"key": "restaurantId",
+											"value": "string"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "*/*"
+											},
+											{
+												"key": "Authorization",
+												"value": "Bearer <token>",
+												"description": "Added as a part of security scheme: bearer"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/restaurants/:restaurantId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"restaurants",
+												":restaurantId"
+											],
+											"variable": [
+												{
+													"key": "restaurantId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "*/*"
+										}
+									],
+									"cookie": [],
+									"body": "{}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "get Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/restaurants?type=string&category=string",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "string"
+								},
+								{
+									"key": "category",
+									"value": "string"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/restaurants?type=string&category=string",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"restaurants"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": "string"
+										},
+										{
+											"key": "category",
+											"value": "string"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"type\": \"string\",\n    \"category\": \"string\",\n    \"address\": \"string\",\n    \"location\": {\n      \"type\": \"Point\",\n      \"coordinates\": [\n        126.941,\n        37.5509\n      ]\n    },\n    \"imageUrl\": \"string\",\n    \"stats\": {\n      \"rating\": 9598.865358879299,\n      \"reviewCount\": 9728,\n      \"likeCount\": 8793\n    },\n    \"menu\": [\n      {\n        \"name\": \"제육볶음\",\n        \"price\": 8000\n      },\n      {\n        \"name\": \"제육볶음\",\n        \"price\": 8000\n      }\n    ],\n    \"createdAt\": \"1969-09-20T05:08:16.478Z\",\n    \"updatedAt\": \"1974-06-07T08:48:54.109Z\",\n    \"active\": false,\n    \"isActive\": false\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"type\": \"string\",\n    \"category\": \"string\",\n    \"address\": \"string\",\n    \"location\": {\n      \"type\": \"Point\",\n      \"coordinates\": [\n        126.941,\n        37.5509\n      ]\n    },\n    \"imageUrl\": \"string\",\n    \"stats\": {\n      \"rating\": 3614.8010442123123,\n      \"reviewCount\": 6849,\n      \"likeCount\": 241\n    },\n    \"menu\": [\n      {\n        \"name\": \"제육볶음\",\n        \"price\": 8000\n      },\n      {\n        \"name\": \"제육볶음\",\n        \"price\": 8000\n      }\n    ],\n    \"createdAt\": \"1999-08-18T07:23:43.296Z\",\n    \"updatedAt\": \"1993-05-12T21:34:31.404Z\",\n    \"active\": false,\n    \"isActive\": false\n  }\n]"
+						}
+					]
+				},
+				{
+					"name": "create Restaurant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"서울특별시 마포구 백범로 17\",\n  \"category\": \"한식\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"name\": \"거구장\",\n  \"type\": \"OFF_CAMPUS\",\n  \"imageUrl\": \"https://example.com/image.jpg\",\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/restaurants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"restaurants"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "*/*"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer <token>",
+										"description": "Added as a part of security scheme: bearer"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"address\": \"서울특별시 마포구 백범로 17\",\n  \"category\": \"한식\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"name\": \"거구장\",\n  \"type\": \"OFF_CAMPUS\",\n  \"imageUrl\": \"https://example.com/image.jpg\",\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/restaurants",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"restaurants"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"type\": \"string\",\n  \"category\": \"string\",\n  \"address\": \"string\",\n  \"location\": {\n    \"type\": \"Point\",\n    \"coordinates\": [\n      126.941,\n      37.5509\n    ]\n  },\n  \"imageUrl\": \"string\",\n  \"stats\": {\n    \"rating\": 9398.775544431222,\n    \"reviewCount\": 3043,\n    \"likeCount\": 116\n  },\n  \"menu\": [\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    },\n    {\n      \"name\": \"제육볶음\",\n      \"price\": 8000\n    }\n  ],\n  \"createdAt\": \"1956-12-17T19:35:23.582Z\",\n  \"updatedAt\": \"1970-07-22T21:59:37.188Z\",\n  \"active\": true,\n  \"isActive\": true\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "on-campus-menus",
+			"item": [
+				{
+					"name": "get Menu By Date",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/on-campus-menus?date=2025-10-06",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"on-campus-menus"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-10-06",
+									"description": "조회할 날짜 (YYYY-MM-DD 형식)"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/on-campus-menus?date=2025-10-06",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"on-campus-menus"
+									],
+									"query": [
+										{
+											"key": "date",
+											"value": "2025-10-06",
+											"description": "조회할 날짜 (YYYY-MM-DD 형식)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"string\",\n  \"restaurantId\": \"string\",\n  \"restaurantName\": \"string\",\n  \"weekStartDate\": \"string\",\n  \"dailyMenus\": [\n    {\n      \"date\": \"string\",\n      \"dayOfWeek\": \"string\",\n      \"meals\": [\n        {\n          \"corner\": \"string\",\n          \"category\": \"string\",\n          \"items\": [\n            \"string\",\n            \"string\"\n          ],\n          \"price\": 2577\n        },\n        {\n          \"corner\": \"string\",\n          \"category\": \"string\",\n          \"items\": [\n            \"string\",\n            \"string\"\n          ],\n          \"price\": 1309\n        }\n      ]\n    },\n    {\n      \"date\": \"string\",\n      \"dayOfWeek\": \"string\",\n      \"meals\": [\n        {\n          \"corner\": \"string\",\n          \"category\": \"string\",\n          \"items\": [\n            \"string\",\n            \"string\"\n          ],\n          \"price\": 7086\n        },\n        {\n          \"corner\": \"string\",\n          \"category\": \"string\",\n          \"items\": [\n            \"string\",\n            \"string\"\n          ],\n          \"price\": 4802\n        }\n      ]\n    }\n  ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "restaurants",
+					"item": [
+						{
+							"name": "{restaurantId}",
+							"item": [
+								{
+									"name": "delete Restaurant 1",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{bearerToken}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/admin/restaurants/:restaurantId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"admin",
+												"restaurants",
+												":restaurantId"
+											],
+											"variable": [
+												{
+													"key": "restaurantId",
+													"value": "string"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [
+													{
+														"key": "Authorization",
+														"value": "Bearer <token>",
+														"description": "Added as a part of security scheme: bearer"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/admin/restaurants/:restaurantId",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"admin",
+														"restaurants",
+														":restaurantId"
+													],
+													"variable": [
+														{
+															"key": "restaurantId",
+															"value": "string"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "logout",
+			"item": [
+				{
+					"name": "delete My Account",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer <token>",
+										"description": "Added as a part of security scheme: bearer"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/users/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"users",
+										"me"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {\r",
+									"    console.log(\"✅ 로그아웃 성공, token 환경변수 삭제\");\r",
+									"    pm.environment.unset(\"token\");\r",
+									"} else {\r",
+									"    console.log(`⚠ 로그아웃 실패(code=${pm.response.code}), token 유지`);\r",
+									"}\r",
+									"\r",
+									"pm.test(\"로그아웃 요청이 200이어야 함\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "*/*"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/auth/logout",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": "string"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
